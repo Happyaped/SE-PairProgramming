@@ -35,21 +35,21 @@ export function greedy_snake_step(
       }
 
       //检查是否与其他蛇头可能的移动方向冲突
-    const directions = [
-    [0, 1],  // 上
-    [-1, 0], // 左
-    [0, -1], // 下
-    [1, 0]   // 右
-     ];
-    for (let i = 0; i < other_snakes.length; i += 8) {
-    const headX = other_snakes[i];
-    const headY = other_snakes[i + 1];
-    for (let dir = 0; dir < 4; dir++) {
-      const newX = headX + directions[dir][0];
-      const newY = headY + directions[dir][1];
-      if (newX === x && newY === y) return true; // 预判其他蛇头可能的移动方向
-    }
-    }
+    // const directions = [
+    // [0, 1],  // 上
+    // [-1, 0], // 左
+    // [0, -1], // 下
+    // [1, 0]   // 右
+    //  ];
+    // for (let i = 0; i < other_snakes.length; i += 8) {
+    // const headX = other_snakes[i];
+    // const headY = other_snakes[i + 1];
+    // for (let dir = 0; dir < 4; dir++) {
+    //   const newX = headX + directions[dir][0];
+    //   const newY = headY + directions[dir][1];
+    //   if (newX === x && newY === y) return true; // 预判其他蛇头可能的移动方向
+    // }
+    // }
       
       return false;
     };
