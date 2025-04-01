@@ -125,16 +125,16 @@ assert.strictEqual(
 );
 
 // 复杂障碍物布局测试
-// assert.strictEqual(
-//     greedy_snake_barriers_checker(
-//         [4,4,4,3,4,2,4,1], 
-//         1,                  
-//         [8,8],                              
-//         [5,4,5,5,5,6,6,4,6,5,6,6,7,4,7,5,7,6],
-//         0             
-//     ),
-//     1 // Expect to hit a barrier
-// );
+assert.strictEqual(
+    greedy_snake_barriers_checker(
+        [4,4,4,3,4,2,4,1], 
+        1,                  
+        [8,8],                              
+        [5,4,5,5,5,6,6,4,6,5,6,6,7,4,7,5,7,6],
+        1             
+    ) > 0,
+    true // Expect to hit a barrier
+);
 
 // 无障碍物测试
 assert.strictEqual(
@@ -149,40 +149,40 @@ assert.strictEqual(
 );
 
 // 蛇的不同初始位置测试
-// assert.strictEqual(
-//     greedy_snake_barriers_checker(
-//         [8,8,8,7,8,6,8,5], 
-//         1,                  
-//         [1,1],                              
-//         [7,8,7,7,7,6,6,8,6,7,6,6],
-//         1             
-//     ) > 0,
-//     true
-// );
+assert.strictEqual(
+    greedy_snake_barriers_checker(
+        [8,8,8,7,8,6,8,5], 
+        1,                  
+        [1,1],                              
+        [7,8,7,7,7,6,6,8,6,7,6,6],
+        0             
+    ) > 0,
+    true
+);
 
 // 蛇在角落的行为测试
-// assert.strictEqual(
-//     greedy_snake_barriers_checker(
-//         [1,1,1,2,1,3,1,4], 
-//         1,                  
-//         [8,8],                              
-//         [2,1,2,2,2,3,2,4],
-//         1             
-//     ) > 0,
-//     true
-// );
+assert.strictEqual(
+    greedy_snake_barriers_checker(
+        [1,1,1,2,1,3,1,4], 
+        1,                  
+        [8,8],                              
+        [2,1,2,2,2,3,2,4],
+        0             
+    ) > 0,
+    true
+);
 
 // 障碍物围绕食物测试
-// assert.strictEqual(
-//     greedy_snake_barriers_checker(
-//         [4,4,4,3,4,2,4,1], 
-//         1,                  
-//         [5,5],                              
-//         [4,5,5,4,5,6,6,5],
-//         1             
-//     ) > 0,
-//     true
-// );
+assert.strictEqual(
+    greedy_snake_barriers_checker(
+        [4,4,4,3,4,2,4,1], 
+        1,                  
+        [5,5],                              
+        [4,5,5,4,5,6,6,5],
+        0             
+    ) > 0,
+    true
+);
 
 // 食物在障碍物旁边测试
 assert.strictEqual(
