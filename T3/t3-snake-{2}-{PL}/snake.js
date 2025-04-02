@@ -12,26 +12,21 @@ async function instantiate(module, imports = {}) {
           throw Error(`${message} in ${fileName}:${lineNumber}:${columnNumber}`);
         })();
       },
-      "console.log"(text) {
-        // ~lib/bindings/dom/console.log(~lib/string/String) => void
-        text = __liftString(text >>> 0);
-        console.log(text);
-      },
     }),
   };
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);
   const memory = exports.memory || imports.env.memory;
   const adaptedExports = Object.setPrototypeOf({
-    greedy_snake_step(n, snake, snake_num, other_snakes, food_num, foods, round) {
-      // assembly/index/greedy_snake_step(f64, ~lib/typedarray/Int32Array, f64, ~lib/typedarray/Int32Array, f64, ~lib/typedarray/Int32Array, f64) => f64
-      snake = __retain(__lowerTypedArray(Int32Array, 4, 2, snake) || __notnull());
-      other_snakes = __retain(__lowerTypedArray(Int32Array, 4, 2, other_snakes) || __notnull());
-      foods = __lowerTypedArray(Int32Array, 4, 2, foods) || __notnull();
+    greedy_snake_step(n, snake, snakeNum, otherSnake, foodNum, foods, round) {
+      // assembly/index/greedy_snake_step(i32, ~lib/array/Array<i32>, i32, ~lib/array/Array<i32>, i32, ~lib/array/Array<i32>, i32) => i32
+      snake = __retain(__lowerArray(__setU32, 4, 2, snake) || __notnull());
+      otherSnake = __retain(__lowerArray(__setU32, 4, 2, otherSnake) || __notnull());
+      foods = __lowerArray(__setU32, 4, 2, foods) || __notnull();
       try {
-        return exports.greedy_snake_step(n, snake, snake_num, other_snakes, food_num, foods, round);
+        return exports.greedy_snake_step(n, snake, snakeNum, otherSnake, foodNum, foods, round);
       } finally {
         __release(snake);
-        __release(other_snakes);
+        __release(otherSnake);
       }
     },
   }, exports);
@@ -46,17 +41,19 @@ async function instantiate(module, imports = {}) {
     while (end - start > 1024) string += String.fromCharCode(...memoryU16.subarray(start, start += 1024));
     return string + String.fromCharCode(...memoryU16.subarray(start, end));
   }
-  function __lowerTypedArray(constructor, id, align, values) {
+  function __lowerArray(lowerElement, id, align, values) {
     if (values == null) return 0;
     const
       length = values.length,
       buffer = exports.__pin(exports.__new(length << align, 1)) >>> 0,
-      header = exports.__new(12, id) >>> 0;
+      header = exports.__pin(exports.__new(16, id)) >>> 0;
     __setU32(header + 0, buffer);
     __dataview.setUint32(header + 4, buffer, true);
     __dataview.setUint32(header + 8, length << align, true);
-    new constructor(memory.buffer, buffer, length).set(values);
+    __dataview.setUint32(header + 12, length, true);
+    for (let i = 0; i < length; ++i) lowerElement(buffer + (i << align >>> 0), values[i]);
     exports.__unpin(buffer);
+    exports.__unpin(header);
     return header;
   }
   const refcounts = new Map();
@@ -92,7 +89,6 @@ async function instantiate(module, imports = {}) {
 }
 export const {
   memory,
-  add,
   greedy_snake_step,
 } = await (async url => instantiate(
   await (async () => {
